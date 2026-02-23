@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px; border-radius: 15px;">
+            <h2 class="text-center mb-4">Login</h2>
+
+            <form action="" method="post" id="registration">
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter Email Address">
+                    <span id="email_error" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password:</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Enter your Password">
+                    <span id="password_error" class="text-danger"></span>
+                </div>
+
+
+
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+            </form>
+            <div id="success_message" class="text-success mt-2"></div>
+            <p class="text-center mt-3 text-muted">Create Account <a href="register.html">register</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery-4.0.0.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+            $('#registration').submit(function(e){
+                e.preventDefault();
+
+              var  FormData = {
+                    email: $('#email').val(),
+                    password: $('#password').val()
+                };
+
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/api/login',
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify(FormData),
+                    success: function(data){
+                       console.log(data);
+                        if(data.success){
+                            localStorage.setItem("user", JSON.stringify(data.user));
+                            window.location.href = "pages/dashboard.html";
+                            
+                        }
+                        $('#success_message').text(data.message);
+                    },
+                    error: function(xhr, status, error){
+                        $('#success_message').text(xhr, error, status);
+                    }
+
+                })
+            })
+        })
+    </script>
+</body>
+
+</html>
