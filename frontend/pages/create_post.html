@@ -70,9 +70,38 @@
         $('#createPostForm').submit( function (e){
             e.preventDefault();
 
-            var formData = {
-                
-            }
+            let user = JSON.parse(localStorage.getItem("user"));
+
+            $.ajax({
+                url: "http://127.0.0.1:8000/api/create-post",
+                type: "POST",
+                contentType: "application/json",
+                dataType:"json",
+                data:JSON.stringify({
+                    title: $("#title").val(),
+                    content:$("#content").val(),
+                    user_id: user.id
+                }),
+
+                success: function(data){
+                    $("#successMessage").removeClass('d-none');
+                    $("#successMessage").text(data.message);
+                    
+                },
+                error: function(error){
+                    if(error.status == 422){
+                        let errors  = error.responseJSON.errors;
+
+                        if(error.title){
+                            $("#title_error").text(errors.title[0])
+                        }
+
+                        if(error.content){
+                            $("#content_error").text(errors.content[0])
+                        }
+                    }
+                }
+            })
 
         })
 
