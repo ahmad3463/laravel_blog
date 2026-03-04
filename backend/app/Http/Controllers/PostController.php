@@ -28,7 +28,7 @@ function CreatePost(Request $req){
         $post = Post::create([
             'title'=>$req->title,
             'content'=>$req->content,
-            'user_id'=> $req->user_id
+            'user_id'=> $req->user()->id
         ]);
 
     return response()->json([

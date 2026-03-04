@@ -77,10 +77,12 @@
                 type: "POST",
                 contentType: "application/json",
                 dataType:"json",
+                headers: {
+                    Authorization: "bearer" + localStorage.getItem("token")
+                },
                 data:JSON.stringify({
                     title: $("#title").val(),
                     content:$("#content").val(),
-                    user_id: user.id
                 }),
 
                 success: function(data){

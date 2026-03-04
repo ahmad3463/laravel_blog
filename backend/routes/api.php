@@ -13,4 +13,4 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class,"registerUser"]);
 Route::post('/login', [AuthController::class,"loginUsers"]);
-Route::post('/create-post',[PostController::class,'createpost']);
+Route::post('/create-post',[PostController::class,'createpost'])->middleware('auth:sanctum');
