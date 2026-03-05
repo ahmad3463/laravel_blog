@@ -40,14 +40,15 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/jquery-4.0.0.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-        $(document).ready(function(){
-            $('#registration').submit(function(e){
+        $(document).ready(function () {
+            $('#registration').submit(function (e) {
                 e.preventDefault();
 
-              var  FormData = {
+
+
+                var loginData = {
                     email: $('#email').val(),
                     password: $('#password').val()
                 };
@@ -57,20 +58,23 @@
                     type: "POST",
                     dataType: 'json',
                     contentType: 'application/json',
-                    data: JSON.stringify(FormData),
-                    success: function(data){
-                       console.log(data);
-                        if(data.success){
+                    data: JSON.stringify(loginData),
+                    success: function (data) {
+                        console.log(data);
+                        if (data.token) {
+                            localStorage.setItem("token", data.token);
                             localStorage.setItem("user", JSON.stringify(data.user));
-                            window.location.href = "pages/dashboard.html";
-                            
+                            $('#success_message').text(data.message);
+                            setTimeout(() => {
+                                window.location.href = "pages/dashboard.html";
+                            }, 1000);
+                        } else {
+                            $('#success_message').text(data.message);
                         }
-                        $('#success_message').text(data.message);
                     },
-                    error: function(xhr, status, error){
-                        $('#success_message').text(xhr, error, status);
+                    error: function (xhr) {
+                        $('#success_message').text(xhr.responseJSON.message || "Login failed");
                     }
-
                 })
             })
         })

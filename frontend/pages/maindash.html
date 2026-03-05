@@ -3,21 +3,21 @@
             <!-- Stats Cards -->
             <div class="row mb-4">
                 <div class="col-md-4">
-                    <div class="card shadow-sm p-3 text-center">
-                        <h5>Total Posts</h5>
-                        <h2>15</h2>
+                    <div class="card shadow-sm p-3 text-center total-posts">
+                        <h5>My Posts</h5>
+                        <h2 id="totalPostsCount">0</h2>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card shadow-sm p-3 text-center">
+                    <div class="card shadow-sm p-3 text-center total-users">
                         <h5>Total Users</h5>
-                        <h2>8</h2>
+                        <h2 id="totalUsersCount">0</h2>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="card shadow-sm p-3 text-center">
+                    <div class="card shadow-sm p-3 text-center total-comments">
                         <h5>Comments</h5>
-                        <h2>32</h2>
+                        <h2 id="totalCommentsCount">0</h2>
                     </div>
                 </div>
             </div>
@@ -36,16 +36,67 @@
                     </thead>
                     <tbody id="postsTable">
                         <tr>
-                            <td>1</td>
-                            <td>My First Blog</td>
-                            <td><span class="badge bg-success">Published</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-warning">Edit</button>
-                                <button class="btn btn-sm btn-danger">Delete</button>
-                            </td>
+                            <td colspan="4" class="text-center">Loading...</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
         </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        let token = localStorage.getItem("token");
+
+        if(!token){
+            window.location.href = "../login.html";
+            return;
+        }
+
+        $.ajax({
+            url: "http://127.0.0.1:8000/api/user/dashboard",
+            type: "GET",
+            headers: {
+                Authorization: "Bearer " + token
+            },
+            success: function(data) {
+                // Update stats cards
+                $("#totalPostsCount").text(data.totalPosts);
+                $("#totalUsersCount").text(data.totalUsers);
+                $("#totalCommentsCount").text(data.comments);
+                
+                // Update recent posts table
+                let tableHTML = "";
+                
+                if(data.recentPosts.length === 0){
+                    tableHTML = '<tr><td colspan="4" class="text-center">No posts yet. Create your first post!</td></tr>';
+                } else {
+                    data.recentPosts.forEach((post, index) => {
+                        tableHTML += `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${post.title}</td>
+                                <td><span class="badge bg-success">Published</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning edit-btn" data-id="${post.id}">Edit</button>
+                                    <button class="btn btn-sm btn-danger delete-btn" data-id="${post.id}">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+                
+                $("#postsTable").html(tableHTML);
+            },
+            error: function(xhr) {
+                if(xhr.status === 401) {
+                    alert("Session expired. Please login again.");
+                    window.location.href = "../login.html";
+                } else {
+                    $("#postsTable").html('<tr><td colspan="4" class="text-danger text-center">Error loading dashboard data</td></tr>');
+                }
+            }
+        });
+    });
+</script>

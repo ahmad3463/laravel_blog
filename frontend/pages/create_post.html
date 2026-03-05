@@ -63,7 +63,7 @@
     </div>
 </div>
 
-<script src="../js/jquery-4.0.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -71,6 +71,13 @@
             e.preventDefault();
 
             let user = JSON.parse(localStorage.getItem("user"));
+            let token = localStorage.getItem("token");
+
+            if(!token){
+                alert("Please login first");
+                window.location.href = "../login.html";
+                return;
+            }
 
             $.ajax({
                 url: "http://127.0.0.1:8000/api/create-post",
@@ -78,7 +85,7 @@
                 contentType: "application/json",
                 dataType:"json",
                 headers: {
-                    Authorization: "bearer" + localStorage.getItem("token")
+                    Authorization: "Bearer " + token
                 },
                 data:JSON.stringify({
                     title: $("#title").val(),
@@ -88,29 +95,26 @@
                 success: function(data){
                     $("#successMessage").removeClass('d-none');
                     $("#successMessage").text(data.message);
-                    
+                    $("#createPostForm")[0].reset();
                 },
                 error: function(error){
                     if(error.status == 422){
-                        let errors  = error.responseJSON.errors;
+                        let errors = error.responseJSON.errors;
 
-                        if(error.title){
+                        if(errors.title){
                             $("#title_error").text(errors.title[0])
                         }
 
-                        if(error.content){
+                        if(errors.content){
                             $("#content_error").text(errors.content[0])
                         }
+                    } else {
+                        alert("Error creating post");
                     }
                 }
             })
-
         })
-
-
     })
-
-
 </script>
 
 </body>

@@ -34,9 +34,12 @@ class AuthController extends Controller
            
         ]);
 
+        $token = $user->createToken('auth_token')->plainTextToken;
+
         return response()->json([
             'success' => true,
             'message' => 'User registered successfully',
+            'token' => $token,
             'user' => $user
         ]);
     }
@@ -55,6 +58,7 @@ class AuthController extends Controller
                 'message' => 'invalid Credentail'
             ], 401);
         }
+        $token = $user->createToken('auth_token')->plainTextToken;
             if($user->role === 'admin'){
                 return response()->json([
                     'message'=>'welcome admin'
@@ -63,6 +67,7 @@ class AuthController extends Controller
         return response()->json([
             'success'=> true,
             'message'=> 'login successfully',
+            'token'=> $token,
             'user'=> $user
         ]);
     }

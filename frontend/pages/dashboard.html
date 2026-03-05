@@ -17,7 +17,7 @@
 
 <!-- Navbar -->
 <nav class="navbar navbar-dark bg-dark px-4">
-    <span class="navbar-brand mb-0 h1">Blog Admin Dashboard</span>
+    <span class="navbar-brand mb-0 h1">Blog Dashboard</span>
     <div>
         <span class="text-white me-3">Welcome, <strong id="username"></strong></span>
         <button class="btn btn-danger btn-sm" id="logoutBtn">Logout</button>
@@ -31,9 +31,7 @@
         <div class="col-md-2 sidebar p-0">
             <a href="#" data-page="maindash.html">Dashboard</a>
             <a href="#" data-page="create_post.html">Create Post</a>
-            <a href="#">All Posts</a>
-            <a href="#">Users</a>
-            <a href="#">Settings</a>
+            <a href="#" data-page="posts.html">All Posts</a>
         </div>
 
         <!-- Main Content -->
@@ -45,7 +43,7 @@
 </div>
 
 
-<script src="../js/jquery-4.0.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
     $(document).ready(function(){
@@ -55,12 +53,13 @@
         if(user){
             $("#username").text(user.name);
         } else {
-            window.location.href = "login.html";
+            window.location.href = "../login.html";
         }
 
         // Logout
         $("#logoutBtn").click(function(){
             localStorage.removeItem("user");
+            localStorage.removeItem("token");
             window.location.href = "../login.html";
         });
 
